@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday, Hel</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0e0e0e;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Typing Text */
+    #typing {
+      font-size: clamp(2rem, 6vw, 4rem);
+      font-weight: 500;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid rgba(255,255,255,0.7);
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    /* Fade */
+    .fade-out {
+      animation: fadeOut 2s forwards;
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; }
+    }
+
+    /* Image in Text */
+    .mask-text {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      background: url("her.jpg") center/cover no-repeat;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .wish {
+      margin-top: 20px;
+      font-size: clamp(1rem, 3.5vw, 1.3rem);
+      color: #ddd;
+      max-width: 600px;
+      line-height: 1.6;
+      opacity: 0;
+      animation: fadeIn 2s forwards;
+      animation-delay: 1.5s;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Typing Section -->
+  <div class="center" id="intro">
+    <div id="typing"></div>
+  </div>
+
+  <!-- Main Section -->
+  <div class="center" id="main" style="display:none;">
+    <div class="mask-text">
+      You are my meaning
+    </div>
+    <p class="wish">
+      Wishing you the happiest birthday and a life filled with prosperity, peace, and endless smiles.
+    </p>
+  </div>
+
+  <!-- Sounds -->
+  <audio id="typeSound" src="typing.mp3"></audio>
+  <audio id="bgMusic" src="music.mp3" loop></audio>
+
+  <script>
+    const text = "Happy Birthday, Hel";
+    const typingEl = document.getElementById("typing");
+    const intro = document.getElementById("intro");
+    const main = document.getElementById("main");
+    const typeSound = document.getElementById("typeSound");
+    const bgMusic = document.getElementById("bgMusic");
+
+    let index = 0;
+
+    function typeEffect() {
+      if (index < text.length) {
+        typingEl.textContent += text.charAt(index);
+        typeSound.currentTime = 0;
+        typeSound.play();
+        index++;
+        setTimeout(typeEffect, 120);
+      } else {
+        setTimeout(() => {
+          intro.classList.add("fade-out");
+        }, 1000);
+
+        setTimeout(() => {
+          intro.style.display = "none";
+          main.style.display = "flex";
+          bgMusic.volume = 0.4;
+          bgMusic.play();
+        }, 3000);
+      }
+    }
+
+    // Start on user interaction (mobile safe)
+    document.body.addEventListener("click", () => {
+      if (index === 0) typeEffect();
+    }, { once: true });
+  </script>
+
+</body>
+</html>

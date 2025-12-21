@@ -28,7 +28,6 @@
     text-align: center;
   }
 
-  /* TAP PROMPT */
   #tapPrompt {
     font-size: clamp(1rem,4vw,1.5rem);
     color: #ccc;
@@ -36,11 +35,8 @@
     animation: blinkTap 1s infinite;
   }
 
-  @keyframes blinkTap {
-    50% { opacity: 0; }
-  }
+  @keyframes blinkTap { 50% { opacity: 0; } }
 
-  /* INTRO TYPING */
   #typing {
     font-size: clamp(2rem, 6vw, 4rem);
     border-right: 2px solid rgba(255,255,255,0.6);
@@ -65,15 +61,17 @@
   .mask-text {
     font-family: 'Playfair Display', serif;
     font-weight: 900;
-    font-size: clamp(1.2rem, 2.5vw, 2.2rem);
-    line-height: 1.15;
+    font-size: 0.3rem; /* extremely small */
+    line-height: 0.3rem;
+    letter-spacing: 0.1rem;
+
     background: url("her.jpg") center/cover no-repeat;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    word-wrap: break-word;
   }
 
-  /* FOREGROUND TEXT */
   .foreground {
     position: relative;
     z-index: 2;
@@ -156,15 +154,12 @@
     }
   }
 
-  /* Dummy text generation */
-  const lorem = `
-  Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor
-  incididunt ut labore et dolore magna aliqua Ut enim ad minim veniam quis nostrud
-  exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Duis aute
-  irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-  nulla pariatur Excepteur sint occaecat cupidatat non proident sunt in culpa qui
-  officia deserunt mollit anim id est laborum
-  `.split(" ");
+  /* HUGE DUMMY TEXT GENERATION */
+  const loremBase = `Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum`;
+
+  // Repeat it many times
+  const lorem = Array(100).fill(loremBase).join(" ").split(" ");
+
   const dummyEl = document.getElementById("dummyText");
   let wordIndex = 0;
 
@@ -172,7 +167,7 @@
     if (wordIndex < lorem.length) {
       dummyEl.textContent += lorem[wordIndex] + " ";
       wordIndex++;
-      setTimeout(generateDummyText, 40);
+      setTimeout(generateDummyText, 10); // faster for huge text
     }
   }
 
@@ -188,11 +183,10 @@
     }, 200);
   }
 
-  /* Mobile-safe tap start */
   document.body.addEventListener("click", () => {
     typeIntro();
   }, { once: true });
 
 </script>
 </body>
-</html>
+   </html>

@@ -5,10 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Happy Birthday, Hel</title>
 
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@800;900&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
 
   <style>
+    :root {
+      --bg: #0e0e0e;
+      --text: #ffffff;
+      --muted: #dcdcdc;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -16,31 +22,31 @@
     }
 
     body {
-      background: #0e0e0e;
-      color: white;
+      background: var(--bg);
+      color: var(--text);
       font-family: 'Poppins', sans-serif;
       height: 100vh;
       overflow: hidden;
     }
 
     .center {
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
       flex-direction: column;
       text-align: center;
-      padding: 20px;
+      padding: 1.5rem;
     }
 
-    /* Typing Text */
+    /* Typing intro */
     #typing {
       font-size: clamp(2rem, 6vw, 4rem);
       font-weight: 500;
       letter-spacing: 1px;
       white-space: nowrap;
       overflow: hidden;
-      border-right: 2px solid rgba(255,255,255,0.7);
+      border-right: 2px solid rgba(255,255,255,0.6);
       animation: blink 0.8s infinite;
     }
 
@@ -48,7 +54,6 @@
       50% { border-color: transparent; }
     }
 
-    /* Fade */
     .fade-out {
       animation: fadeOut 2s forwards;
     }
@@ -57,17 +62,116 @@
       to { opacity: 0; }
     }
 
-    /* Image in Text */
+    /* Image masked text */
     .mask-text {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(3rem, 8vw, 7rem);
       font-weight: 900;
-      background: url("1766310557994.jpg") center/cover no-repeat;
+      background: url("her.jpg") center/cover no-repeat;
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 0.95;
+      max-width: 90vw;
+
       animation: float 6s ease-in-out infinite;
     }
+
+    .mask-text span {
+      font-size: clamp(3rem, 9vw, 7rem);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .wish {
+      margin-top: 1.5rem;
+      font-size: clamp(1rem, 3.5vw, 1.3rem);
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.6;
+      opacity: 0;
+      animation: fadeIn 2s forwards;
+      animation-delay: 1.5s;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- INTRO -->
+  <section class="center" id="intro">
+    <div id="typing"></div>
+  </section>
+
+  <!-- MAIN -->
+  <section class="center" id="main" style="display:none;">
+    <div class="mask-text">
+      <span>Happy Birthday</span>
+      <span>Hel</span>
+      <span>Hel</span>
+      <span>Hel</span>
+    </div>
+
+    <p class="wish">
+      Wishing you the happiest birthday and a life filled with prosperity, peace,
+      and endless smiles.
+    </p>
+  </section>
+
+  <!-- AUDIO -->
+  <audio id="typeSound" src="typing.mp3"></audio>
+  <audio id="bgMusic" src="music.mp3" loop></audio>
+
+  <script>
+    const text = "Happy Birthday, Hel";
+    const typingEl = document.getElementById("typing");
+    const intro = document.getElementById("intro");
+    const main = document.getElementById("main");
+    const typeSound = document.getElementById("typeSound");
+    const bgMusic = document.getElementById("bgMusic");
+
+    typeSound.volume = 0.25;
+    bgMusic.volume = 0.35;
+
+    let index = 0;
+
+    function typeEffect() {
+      if (index < text.length) {
+        typingEl.textContent += text.charAt(index);
+        typeSound.currentTime = 0;
+        typeSound.play();
+        index++;
+        setTimeout(typeEffect, 120);
+      } else {
+        setTimeout(() => intro.classList.add("fade-out"), 1000);
+        setTimeout(() => {
+          intro.style.display = "none";
+          main.style.display = "flex";
+          bgMusic.play();
+        }, 3000);
+      }
+    }
+
+    document.body.addEventListener("click", () => {
+      if (index === 0) typeEffect();
+    }, { once: true });
+  </script>
+
+</body>
+  </html>    }
 
     @keyframes float {
       0%, 100% { transform: translateY(0); }

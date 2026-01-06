@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday, Jill</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0e0e0e;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .center {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  #tapPrompt {
+    font-size: clamp(1rem,4vw,1.5rem);
+    color: #ccc;
+    margin-bottom: 1rem;
+    animation: blinkTap 1s infinite;
+  }
+
+  @keyframes blinkTap { 50% { opacity: 0; } }
+
+  #typing {
+    font-size: clamp(2rem, 6vw, 4rem);
+    border-right: 2px solid rgba(255,255,255,0.6);
+    white-space: nowrap;
+    overflow: hidden;
+    animation: blink 0.8s infinite;
+  }
+
+  @keyframes blink { 50% { border-color: transparent; } }
+
+  .fade-out { animation: fadeOut 2s forwards; }
+  @keyframes fadeOut { to { opacity: 0; } }
+
+  /* MASKED DUMMY TEXT */
+  .mask-container {
+    position: absolute;
+    inset: 0;
+    padding: 2rem;
+    overflow: hidden;
+  }
+
+  .mask-text {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 0.3rem; /* extremely small */
+    line-height: 0.3rem;
+    letter-spacing: 0.1rem;
+
+    background: url("607712660_1418586223309591_9048211560599864561_n.jpg") center/cover no-repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    word-wrap: break-word;
+  }
+
+  .foreground {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    opacity: 0;
+    animation: fadeIn 2s forwards;
+    animation-delay: 2s;
+  }
+
+  .foreground h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    margin-bottom: 1rem;
+  }
+
+  .foreground p {
+    font-size: clamp(1rem, 3.5vw, 1.3rem);
+    color: #ddd;
+    line-height: 1.6;
+  }
+
+  @keyframes fadeIn { to { opacity: 1; } }
+
+</style>
+</head>
+<body>
+
+<section class="center" id="intro">
+  <div id="tapPrompt">Tap anywhere to start</div>
+  <div id="typing"></div>
+</section>
+
+<section class="center" id="main" style="display:none;">
+  <div class="mask-container">
+    <div class="mask-text" id="dummyText"></div>
+  </div>
+
+  <div class="foreground">
+    <h1>Happy Birthday, Jill</h1>
+    <p>
+      Wishing you the happiest birthday and a life filled with prosperity,
+      peace, and endless smiles.
+    </p>
+  </div>
+</section>
+
+<!-- AUDIO -->
+<audio id="typeSound" src="typing.mp3"></audio>
+<audio id="bgMusic" src="music.mp3" loop></audio>
+
+<script>
+  const tapPrompt = document.getElementById("tapPrompt");
+  const typingEl = document.getElementById("typing");
+  const intro = document.getElementById("intro");
+  const main = document.getElementById("main");
+  const typeSound = document.getElementById("typeSound");
+  const bgMusic = document.getElementById("bgMusic");
+
+  typeSound.volume = 0.25;
+  bgMusic.volume = 0.35;
+
+  const introText = "Happy Birthday, Jill";
+  let i = 0;
+
+  function typeIntro() {
+    tapPrompt.style.display = "none";
+    if (i < introText.length) {
+      typingEl.textContent += introText[i++];
+      typeSound.currentTime = 0;
+      typeSound.play();
+      setTimeout(typeIntro, 120);
+    } else {
+      setTimeout(() => intro.classList.add("fade-out"), 800);
+      setTimeout(() => {
+        intro.style.display = "none";
+        main.style.display = "flex";
+        fadeInMusic();
+        generateDummyText();
+      }, 2500);
+    }
+  }
+
+  /* HUGE DUMMY TEXT GENERATION */
+  const loremBase="wish u well wish u well wish u well wish u well wish u well wish u well wish u well wish u well wish u well wish u well wish u well wish u well wish u well wish u well"; // Repeat it many times
+  const lorem = Array(100).fill(loremBase).join(" ").split(" ");
+
+  const dummyEl = document.getElementById("dummyText");
+  let wordIndex = 0;
+
+  function generateDummyText() {
+    if (wordIndex < lorem.length) {
+      dummyEl.textContent += lorem[wordIndex] + " ";
+      wordIndex++;
+      setTimeout(generateDummyText, 10); // faster for huge text
+    }
+  }
+
+  /* Smooth fade-in music */
+  function fadeInMusic() {
+    bgMusic.play();
+    let vol = 0;
+    const fade = setInterval(() => {
+      if (vol < 0.35) {
+        vol += 0.02;
+        bgMusic.volume = vol;
+      } else clearInterval(fade);
+    }, 200);
+  }
+
+  document.body.addEventListener("click", () => {
+    typeIntro();
+  }, { once: true });
+
+</script>
+</body>
+   </html>
